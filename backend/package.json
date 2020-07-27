@@ -1,0 +1,20 @@
+{
+  "name": "todo-app-backend",
+  "version": "1.0.0",
+  "description": "Backend for my Todo adventures",
+  "main": "index.js",
+  "author": "hendrikniemann",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "dev": "nodemon -e purs,js,json -w src -x \"spago run\"",
+    "build": "spago build",
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "sqlite3": "^4.1.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.4"
+  }
+}

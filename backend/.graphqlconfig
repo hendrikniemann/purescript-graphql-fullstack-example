@@ -1,0 +1,12 @@
+{
+  "projects": {
+    "todo-app": {
+      "schemaPath": "schema.graphql",
+      "extensions": {
+        "endpoints": {
+          "dev": "http://localhost:8080/graphql"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,5 @@
+.spago
+.psc-ide-port
+output
+.env
+node_modules
