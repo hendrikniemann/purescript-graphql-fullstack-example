@@ -5,8 +5,6 @@ import Prelude
 import Context (Context, getContext)
 import Control.Monad.Error.Class (class MonadError, throwError)
 import Data.DateTime (DateTime)
-import Data.Either (fromRight)
-import Data.Formatter.DateTime (Formatter, parseFormatString)
 import Data.JSDate (now, toDateTime)
 import Data.Maybe (Maybe(..), fromJust)
 import Effect (Effect)

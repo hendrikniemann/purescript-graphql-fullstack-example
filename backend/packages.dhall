@@ -3,6 +3,26 @@ let upstream =
 
 let overrides = {=}
 
-let additions = { graphql = ../../purescript-graphql/spago.dhall as Location }
+let additions =
+      { graphql =
+        { dependencies =
+          [ "argonaut"
+          , "console"
+          , "control"
+          , "effect"
+          , "enums"
+          , "foldable-traversable"
+          , "nullable"
+          , "numbers"
+          , "prelude"
+          , "psci-support"
+          , "record"
+          , "spec"
+          , "string-parsers"
+          ]
+        , repo = "https://github.com/hendrikniemann/purescript-graphql.git"
+        , version = "master"
+        }
+      }
 
 in  upstream ⫽ overrides ⫽ additions

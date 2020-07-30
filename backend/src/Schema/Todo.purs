@@ -5,7 +5,8 @@ import Prelude
 import Context (Context)
 import DB (Todo)
 import Data.Maybe (isJust)
-import GraphQL.Type ((:>), (!#>), (.>))
+import Data.Symbol (SProxy(..))
+import GraphQL.Type ((:>), (!#>), (.>), (:?>))
 import GraphQL.Type as GQL
 import GraphQL.Type.Scalar as GQLScalar
 import Schema.DateTime (dateTimeType)
@@ -28,3 +29,9 @@ todoType = GQL.objectType "Todo"
   :> GQL.field "isCompleted" GQLScalar.boolean
     .> "The date on which this todo was completed."
     !#> _.completedAt >>> isJust
+
+todoDraftType :: GQL.InputObjectType { title :: String }
+todoDraftType = GQL.inputObjectType "TodoDraft"
+  .> "This draft type describes all the fields required for the creation of a todo."
+  :?> GQL.inputField GQLScalar.string (SProxy :: SProxy "title")
+    .> "The title of the todo."

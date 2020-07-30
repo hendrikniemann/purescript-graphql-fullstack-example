@@ -14,7 +14,7 @@ import Effect.Class (liftEffect)
 import GraphQL.Type (withField, (!#>), (!>), (.>), (:>), (?>))
 import GraphQL.Type as GQL
 import GraphQL.Type.Scalar as GQLScalar
-import Schema.Todo (todoType)
+import Schema.Todo (todoDraftType, todoType)
 import Util (currentDateTime, getUserIdOrThrow, noteME)
 
 mutationType :: GQL.ObjectType Context Unit
@@ -32,8 +32,8 @@ mutationType = GQL.objectType "Mutation"
     !> updateTodoCompletedAt Nothing
   :> GQL.field "createTodo" createTodoResult
     .> "Create a new Todo."
-    ?> GQL.arg GQLScalar.string (SProxy :: SProxy "title")
-      .> "The title of the new todo."
+    ?> GQL.arg todoDraftType (SProxy :: SProxy "draft")
+      .> "A draft version of the new todo."
     !> createTodoResolver
     where
       completeTodoResolver :: { id :: String } -> Unit -> Context (Maybe Todo)
@@ -41,12 +41,12 @@ mutationType = GQL.objectType "Mutation"
         createdAt <- liftEffect $ Just <$> currentDateTime
         updateTodoCompletedAt createdAt args unit
 
-      createTodoResolver :: { title :: String } -> Unit -> Context (Maybe Todo)
-      createTodoResolver { title } _ = do
+      createTodoResolver :: { draft :: { title :: String } } -> Unit -> Context (Maybe Todo)
+      createTodoResolver { draft } _ = do
         context <- getContext
         userId <- getUserIdOrThrow
         liftAff do
-          id <- createTodo { title, userId, completedAt: Nothing } context.connection
+          id <- createTodo { title: draft.title, userId, completedAt: Nothing } context.connection
           loadTodoById id context.connection
 
       updateTodoCompletedAt :: Maybe DateTime -> { id :: String } -> Unit -> Context (Maybe Todo)
