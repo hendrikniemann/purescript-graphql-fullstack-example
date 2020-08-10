@@ -21,7 +21,7 @@ let additions =
           , "string-parsers"
           ]
         , repo = "https://github.com/hendrikniemann/purescript-graphql.git"
-        , version = "master"
+        , version = "ac07120"
         }
       }
 

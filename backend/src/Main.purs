@@ -5,9 +5,7 @@ import Prelude
 import Auth as Auth
 import Control.Alt ((<|>))
 import Control.Monad.State (evalStateT)
-import Data.Argonaut.Core (Json, stringify)
-import Data.Argonaut.Decode (decodeJson, (.:), (.:?))
-import Data.Argonaut.Parser (jsonParser)
+import Data.Argonaut (Json, stringify, jsonParser, decodeJson, (.:), (.:?))
 import Data.Array (uncons)
 import Data.Either (Either(..))
 import Data.Map (Map, fromFoldableWithIndex)
@@ -52,7 +50,7 @@ createRouter connection { body, method: HTTPure.Post, path: [ "graphql" ], heade
     Right { query, variables, operationName } -> do
       let authHeader = headers !! "Authorization" <|> headers !! "authorization"
       let vars = fromMaybe mempty variables
-      let execution = graphql schema query vars operationName $ pure unit
+      let execution = graphql schema query vars operationName unit
       userId <- liftEffect $ traverse Auth.validateToken authHeader
       result <- evalStateT execution { connection, userId }
       HTTPure.ok' responseHeaders $ stringify result
