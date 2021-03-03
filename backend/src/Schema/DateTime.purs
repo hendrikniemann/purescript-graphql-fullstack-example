@@ -13,7 +13,7 @@ import Data.Either (Either(..), fromRight)
 import Data.Formatter.DateTime (Formatter, format, parseFormatString, unformat)
 import Data.Maybe (Maybe(..))
 import GraphQL.Language.AST as AST
-import GraphQL.Type (ScalarType(..))
+import GraphQL (ScalarType(..))
 import Partial.Unsafe (unsafePartial)
 
 -- | A scalar type for DateTime values

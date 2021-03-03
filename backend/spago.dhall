@@ -18,6 +18,7 @@
   , "refs"
   , "simple-jwt"
   , "spec"
+  , "stringutils"
   ]
 , packages = ./packages.dhall
 , sources = [ "src/**/*.purs", "test/**/*.purs" ]

@@ -7,6 +7,7 @@ module DB
   , createTodo
   , updateTodo
   , loadUserById
+  , loadAllUsers
   ) where
 
 import Prelude
@@ -130,3 +131,8 @@ loadUserById id connection = do
   res <- queryDB connection "SELECT * FROM user WHERE id = ?" [unsafeToForeign id]
   arr <- liftExcept $ readArray res >>= traverse readUser
   pure $ Array.head arr
+
+loadAllUsers :: DBConnection -> Aff (Array User)
+loadAllUsers connection = do
+  res <- queryDB connection "SELECT * FROM user" []
+  liftExcept $ readArray res >>= traverse readUser

@@ -6,6 +6,7 @@ import Data.DateTime.Instant (unInstant)
 import Data.Either (Either(..))
 import Data.Int as Int
 import Data.Newtype (unwrap)
+import Debug.Trace (spy)
 import Effect (Effect)
 import Effect.Exception (Error, error, throwException)
 import Effect.Now (now)
@@ -33,7 +34,7 @@ validateToken :: String -> Effect Int
 validateToken token = do
   secret <- getSecret
   time <- currentTimestamp
-  result <- (Jwt.decode secret (Jwt.fromString token) :: Effect (Either Jwt.JwtError AuthPayload))
+  result <- (Jwt.decode ( spy "secret" secret) (spy "jwt" $ Jwt.fromString token) :: Effect (Either Jwt.JwtError AuthPayload))
   case result of
     Left err -> throwException $ toError err
     Right { sub, nbf, exp } ->
@@ -48,4 +49,4 @@ currentTimestamp :: Effect Int
 currentTimestamp = Int.round <$> (_ / 1000.0) <$> unwrap <$> unInstant <$> now
 
 toError :: Jwt.JwtError -> Error
-toError _ = error "Some error happened in JWT encoding/decoding"
+toError e = error $ "Some error happened in JWT encoding/decoding: " <> (show e)

@@ -4,8 +4,8 @@ import Prelude
 
 import Context (Context)
 import DB (loadTodosByUserId, loadUserById)
-import GraphQL.Type ((.>), (:>), (!!>))
-import GraphQL.Type as GQL
+import GraphQL ((.>), (:>), (!!>))
+import GraphQL as GQL
 import Schema.Todo (todoType)
 import Schema.User (userType)
 import Util (getUserIdOrThrow, liftDbFunction)

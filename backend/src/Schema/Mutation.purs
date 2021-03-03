@@ -11,9 +11,8 @@ import Data.Symbol (SProxy(..))
 import Data.Traversable (foldl, sequence)
 import Effect.Aff.Class (liftAff)
 import Effect.Class (liftEffect)
-import GraphQL.Type (withField, (!#>), (!>), (.>), (:>), (?>))
-import GraphQL.Type as GQL
-import GraphQL.Type.Scalar as GQLScalar
+import GraphQL ((!#>), (!>), (.>), (:>), (?>))
+import GraphQL as GQL
 import Schema.Todo (todoDraftType, todoType)
 import Util (currentDateTime, getUserIdOrThrow, noteME)
 
@@ -22,12 +21,12 @@ mutationType = GQL.objectType "Mutation"
   .> "The main Mutation object, entrance for all mutations."
   :> GQL.field "completeTodo" completeTodoResult
     .> "Complete a todo."
-    ?> GQL.arg GQLScalar.id (SProxy :: SProxy "id")
+    ?> GQL.arg GQL.id (SProxy :: SProxy "id")
       .> "The id of the todo that should be set to complete."
     !> completeTodoResolver
   :> GQL.field "uncompleteTodo" uncompleteTodoResult
     .> "Undo the completion of a todo."
-    ?> GQL.arg GQLScalar.id (SProxy :: SProxy "id")
+    ?> GQL.arg GQL.id (SProxy :: SProxy "id")
       .> "The id of the todo that should no longer be set to complete."
     !> updateTodoCompletedAt Nothing
   :> GQL.field "createTodo" createTodoResult
@@ -60,7 +59,7 @@ mutationType = GQL.objectType "Mutation"
 
 mutationResultFields :: Array (GQL.Field Context (Maybe Todo) () ())
 mutationResultFields =
-  [ GQL.field "success" GQLScalar.boolean
+  [ GQL.field "success" GQL.boolean
       .> "Indicates whether this mutation was successful."
       !#> isJust
   , GQL.nullableField "todo" todoType
@@ -69,16 +68,16 @@ mutationResultFields =
   ]
 
 completeTodoResult :: GQL.ObjectType Context (Maybe Todo)
-completeTodoResult = foldl withField t mutationResultFields
+completeTodoResult = foldl GQL.withField t mutationResultFields
   where
     t = GQL.objectType "CompleteTodoResult" .> "Result type for `completeTodo` mutation."
 
 uncompleteTodoResult :: GQL.ObjectType Context (Maybe Todo)
-uncompleteTodoResult = foldl withField t mutationResultFields
+uncompleteTodoResult = foldl GQL.withField t mutationResultFields
   where
     t = GQL.objectType "UncompleteTodoResult" .> "Result type for `uncompleteTodo` mutation."
 
 createTodoResult :: GQL.ObjectType Context (Maybe Todo)
-createTodoResult = foldl withField t mutationResultFields
+createTodoResult = foldl GQL.withField t mutationResultFields
   where
     t = GQL.objectType "CreateTodoResult" .> "Result type for `createTodo` mutation."
