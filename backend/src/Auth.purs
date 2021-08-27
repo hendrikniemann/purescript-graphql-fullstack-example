@@ -6,7 +6,7 @@ import Data.DateTime.Instant (unInstant)
 import Data.Either (Either(..))
 import Data.Int as Int
 import Data.Newtype (unwrap)
-import Debug.Trace (spy)
+import Debug (spy)
 import Effect (Effect)
 import Effect.Exception (Error, error, throwException)
 import Effect.Now (now)

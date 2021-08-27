@@ -4,3 +4,6 @@
 output
 .env
 node_modules
+generated-docs
+.vscode
+

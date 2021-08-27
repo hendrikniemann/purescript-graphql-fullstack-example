@@ -9,12 +9,12 @@ import Prelude
 
 import Data.Argonaut.Core as Json
 import Data.DateTime (DateTime)
-import Data.Either (Either(..), fromRight)
+import Data.Either (Either(..), fromRight')
 import Data.Formatter.DateTime (Formatter, format, parseFormatString, unformat)
 import Data.Maybe (Maybe(..))
 import GraphQL.Language.AST as AST
 import GraphQL (ScalarType(..))
-import Partial.Unsafe (unsafePartial)
+import Partial.Unsafe (unsafeCrashWith)
 
 -- | A scalar type for DateTime values
 -- |
@@ -37,4 +37,6 @@ formatDateTime :: DateTime -> String
 formatDateTime = format dateFormat
 
 dateFormat ∷ Formatter
-dateFormat = parseFormatString "YYYY-MM-DDTHH:mm:ss.SSSZ" # unsafePartial fromRight
+dateFormat = parseFormatString "YYYY-MM-DDTHH:mm:ss.SSSZ" # fromRight' unknownFormat
+  where
+    unknownFormat = (\_ -> unsafeCrashWith "Could not parse datetime format.")

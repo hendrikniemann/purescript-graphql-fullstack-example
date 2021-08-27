@@ -9,7 +9,7 @@ import Data.Argonaut (Json, JsonDecodeError, decodeJson, jsonParser, printJsonDe
 import Data.Array (uncons)
 import Data.Bifunctor (lmap)
 import Data.Either (Either(..))
-import Data.Map (Map, fromFoldableWithIndex)
+import Data.Map (Map, fromFoldableWithIndex, empty)
 import Data.Maybe (Maybe(..), fromMaybe)
 import Data.String (drop)
 import Data.String.Utils (startsWith)
@@ -53,9 +53,9 @@ createRouter connection { body, method: HTTPure.Post, path: [ "graphql" ], heade
     Left error -> HTTPure.badRequest error
     Right { query, variables, operationName } -> do
       let authHeader = headers !! "Authorization" <|> headers !! "authorization"
-      let vars = fromMaybe mempty variables
+      let vars = fromMaybe empty variables
       let execution = graphql schema query vars operationName unit
-      token <- case authHeader of
+      _ <- case authHeader of
         Just ah | startsWith "Bearer " ah -> pure unit
         _ -> throwError $ error "authorization header value must start with \"Bearer\""
       userId <- liftEffect $ traverse Auth.validateToken (drop 7 <$> authHeader)

@@ -16,7 +16,7 @@ import Control.Monad.Except (runExcept, throwError)
 import Data.Array (head)
 import Data.Array as Array
 import Data.DateTime (DateTime)
-import Data.Either (Either(..), either, fromRight)
+import Data.Either (Either(..), either, fromRight')
 import Data.Formatter.DateTime (Formatter, format, parseFormatString, unformat)
 import Data.List.NonEmpty as NonEmptyList
 import Data.Maybe (Maybe(..))
@@ -25,7 +25,7 @@ import Data.Traversable (traverse)
 import Effect.Aff (Aff, error)
 import Foreign (F, Foreign, ForeignError(..), fail, readArray, readInt, readNullOrUndefined, readString, renderForeignError, unsafeToForeign)
 import Foreign.Index (readProp)
-import Partial.Unsafe (unsafePartial)
+import Partial.Unsafe (unsafeCrashWith)
 import SQLite3 (DBConnection, queryDB)
 
 type Todo =
@@ -48,7 +48,9 @@ liftExcept ex = case runExcept ex of
   Right val -> pure val
 
 databaseDateFormat ∷ Formatter
-databaseDateFormat = parseFormatString "YYYY-MM-DD HH:mm:ss" # unsafePartial fromRight
+databaseDateFormat = parseFormatString "YYYY-MM-DD HH:mm:ss" # fromRight' unknownFormat
+  where
+    unknownFormat = (\_ -> unsafeCrashWith "Could not parse DB datetime format.")
 
 readDateTime :: Foreign -> F DateTime
 readDateTime val = readString val >>= (either (fail <<< ForeignError) pure <<< parseDateTime)
